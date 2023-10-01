@@ -4,14 +4,14 @@
 #include <cmath>
 #include <iostream>
 
-class vec3 {
+class Vec3 {
 
 public:
   double axis[3];
 
   // initialtion constructors
-  vec3() : axis{0, 0, 0} {}; // default
-  vec3(double init_x, double init_y, double init_z)
+  Vec3() : axis{0, 0, 0} {}; // default
+  Vec3(double init_x, double init_y, double init_z)
       : axis{init_x, init_y, init_z} {};
 
   double x() const { return axis[0]; }
@@ -20,28 +20,28 @@ public:
 
   // ======== vector operation functions
   // returns the inverse value of the vector
-  vec3 operator-() const { return vec3(-axis[0], -axis[1], -axis[2]); };
+  Vec3 operator-() const { return Vec3(-axis[0], -axis[1], -axis[2]); };
   // returns the axis value based of an array element
   double operator[](int value) const { return axis[value]; }
   // returns the axis address value based on the element selected
   double& operator[](int value) { return axis[value]; }
 
   //
-  vec3& operator+=(const vec3& input_vec3) {
+  Vec3& operator+=(const Vec3& input_vec3) {
     axis[0] += input_vec3[0];
     axis[1] += input_vec3[1];
     axis[2] += input_vec3[2];
     return *this; // dereference to the current vec3
   }
 
-  vec3& operator*=(double value) {
+  Vec3& operator*=(double value) {
     axis[0] *= value;
     axis[1] *= value;
     axis[2] *= value;
     return *this;
   }
 
-  vec3& operator/=(double value) { return *this *= 1 / value; }
+  Vec3& operator/=(double value) { return *this *= 1 / value; }
 
   double length_sqared() const {return axis[0]*axis[0] + axis[1] * axis[1] + axis[2] + axis[2];}
   
@@ -52,33 +52,33 @@ public:
 
 // Vector Utilies
 
-inline std::ostream& operator<<(std::ostream& out, const vec3& v){return out<< v.axis[0] << ' ' << v.axis[1] << ' ' << v.axis[2];}
+inline std::ostream& operator<<(std::ostream& out, const Vec3& v){return out<< v.axis[0] << ' ' << v.axis[1] << ' ' << v.axis[2];}
 
 // Math Operators
-inline vec3 operator+(const vec3& a, const vec3& b){return vec3(a.axis[0] + b.axis[0], a.axis[1] + b.axis[1], a.axis[2] + b.axis[2]);}
-inline vec3 operator-(const vec3& a, const vec3& b){return vec3(a.axis[0] - b.axis[0], a.axis[1] - b.axis[1], a.axis[2] - b.axis[2]);}
+inline Vec3 operator+(const Vec3& a, const Vec3& b){return Vec3(a.axis[0] + b.axis[0], a.axis[1] + b.axis[1], a.axis[2] + b.axis[2]);}
+inline Vec3 operator-(const Vec3& a, const Vec3& b){return Vec3(a.axis[0] - b.axis[0], a.axis[1] - b.axis[1], a.axis[2] - b.axis[2]);}
 
-inline vec3 operator*(const vec3& a, const vec3& b){return vec3(a.axis[0] * b.axis[0], a.axis[1] * b.axis[1], a.axis[2] * b.axis[2]);}
-inline vec3 operator*(double value, const vec3& v){return vec3(value * v.axis[0], value * v.axis[1], value * v.axis[2]);}
-inline vec3 operator*(const vec3& v, double value){return value * v;}
+inline Vec3 operator*(const Vec3& a, const Vec3& b){return Vec3(a.axis[0] * b.axis[0], a.axis[1] * b.axis[1], a.axis[2] * b.axis[2]);}
+inline Vec3 operator*(double value, const Vec3& v){return Vec3(value * v.axis[0], value * v.axis[1], value * v.axis[2]);}
+inline Vec3 operator*(const Vec3& v, double value){return value * v;}
 // using const for now
-inline vec3 operator/(const vec3& v, double value){return (1/value) * v;}
+inline Vec3 operator/(const Vec3& v, double value){return (1/value) * v;}
 
-inline double dot_product(const vec3& a, const vec3& b){
+inline double dot_product(const Vec3& a, const Vec3& b){
   return
       a.axis[0] * b.axis[0] +
       a.axis[1] * b.axis[1] +
       a.axis[2] * b.axis[2];
 }
 
-inline vec3 cross_product(const vec3& a, const vec3& b){
-  return vec3(
+inline Vec3 cross_product(const Vec3& a, const Vec3& b){
+  return Vec3(
       a.y() * b.z() - a.z() * a.y(),
       a.z() * b.x() - a.x() * b.z(),
       a.x() * b.y() - a.y() * b.x()
       );
 }
 
-inline vec3 magnitude(const vec3& v){return v/v.length();}
+inline Vec3 Normalized(const Vec3& v){return v/v.length();}
 
 #endif

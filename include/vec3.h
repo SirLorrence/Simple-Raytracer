@@ -43,7 +43,7 @@ public:
 
   Vec3& operator/=(double value) { return *this *= 1 / value; }
 
-  double length_sqared() const {return axis[0]*axis[0] + axis[1] * axis[1] + axis[2] + axis[2];}
+  double length_squared() const {return axis[0]*axis[0] + axis[1] * axis[1] + axis[2] * axis[2];}
   
   double length() const { return std::sqrt(length_sqared()); }
   
@@ -64,7 +64,7 @@ inline Vec3 operator*(const Vec3& v, double value){return value * v;}
 // using const for now
 inline Vec3 operator/(const Vec3& v, double value){return (1/value) * v;}
 
-inline double dot_product(const Vec3& a, const Vec3& b){
+inline double DotProduct(const Vec3& a, const Vec3& b){
   return
       a.axis[0] * b.axis[0] +
       a.axis[1] * b.axis[1] +
@@ -79,6 +79,6 @@ inline Vec3 cross_product(const Vec3& a, const Vec3& b){
       );
 }
 
-inline Vec3 Normalized(const Vec3& v){return v/v.length();}
+inline Vec3 Normalized(Vec3 v){return v/v.length();}
 
 #endif

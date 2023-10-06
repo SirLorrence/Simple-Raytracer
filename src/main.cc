@@ -4,24 +4,44 @@
 
 #include <iostream>
 
-bool HitSphere(const Vec3& center, const Ray& ray, float radius) {
+// bool HitSphere(const Vec3& center, const Ray& ray, float radius) {
+//   Vec3 origin_center = ray.Origin() - center;
+//   double a = DotProduct(ray.Direction(), ray.Direction());
+//   double b = 2.0 * DotProduct(origin_center, ray.Direction());
+//   double c = DotProduct(origin_center, origin_center) - radius * radius;
+//   float  discriminant = b * b - 4.0f * a * c;
+//   return (discriminant >= 0.0f);
+// }
+
+double HitSphere(const Vec3 &center, const Ray &ray, float radius) {
   Vec3 origin_center = ray.Origin() - center;
   double a = DotProduct(ray.Direction(), ray.Direction());
   double b = 2.0 * DotProduct(origin_center, ray.Direction());
   double c = DotProduct(origin_center, origin_center) - radius * radius;
-  float  discriminant = b * b - 4.0f * a * c;
-  return (discriminant >= 0.0f);
+  float discriminant = b * b - 4.0f * a * c;
+
+  if (discriminant < 0) {
+    return -1.0;
+  }
+  return (-b - std::sqrt(discriminant) / (2.0f * a));
 }
 
-Color RayColor(const Ray& r) {
-  if (HitSphere(Vec3(0, 0, -1), r, 0.5f))
-    return Color(1, 0, 0);
+// TODO: const issue
+Color RayColor(Ray &r) {
+  double t = HitSphere(Vec3(0, 0, -1), r, 0.5f);
+  if (t > 0) {
+    Vec3 sphere_normal = Normalized(r.Scaler(t) - Vec3(0, 0, -1));
+    return 0.5 * Color(sphere_normal.x() + 1, sphere_normal.y() + 1,
+                       sphere_normal.z() + 1);
+  }
+  //  if (HitSphere(Vec3(0, 0, -1), r, 0.5f))
+  //    return Color(1, 0, 0);
 
   Vec3 unit_direction = Normalized(r.Direction());
   double blended_value = 0.5 * (unit_direction.y() + 1.0);
-  return (1.0 - blended_value) * Color(1.0, 1.0, 1.0) + blended_value * Color(0.5, 0.7, 1.0);
+  return (1.0 - blended_value) * Color(1.0, 1.0, 1.0) +
+         blended_value * Color(0.5, 0.7, 1.0);
 }
-
 
 int main() {
   // image size in pixels (using c20)
@@ -35,12 +55,14 @@ int main() {
   // Camera Setup
   float focal_length = 1.0f;
   float viewpoint_height = 2.0f;
-  double viewpoint_width = viewpoint_height * (static_cast<double>(img_width) / img_height);
+  double viewpoint_width =
+      viewpoint_height * (static_cast<double>(img_width) / img_height);
   Vec3 cam_center = Vec3(); // vector zero
 
   // calculate the vec across the h and v viewport edge
   Vec3 viewport_x = Vec3(viewpoint_width, 0, 0);
-  Vec3 viewport_y = Vec3(0, viewpoint_height, 0); // inverse for right hand coords
+  Vec3 viewport_y =
+      Vec3(0, viewpoint_height, 0); // inverse for right hand coords
 
   // calculate the h and v delta vec from pixel to pixel
   Vec3 pixel_delta_x = viewport_x / img_width;
@@ -58,14 +80,16 @@ int main() {
     // logging the  progress
     std::clog << "\r Lines Remaining:" << (img_height - y) << ' ' << std::flush;
     for (int x = 0; x < img_width; ++x) {
-      Vec3 pixel_center = pixell00_loc + (x * pixel_delta_x) + (y * pixel_delta_y);
+      Vec3 pixel_center =
+          pixell00_loc + (x * pixel_delta_x) + (y * pixel_delta_y);
       Vec3 ray_direction = pixel_center - cam_center;
       Ray ray(cam_center, ray_direction);
       Vec3 pixel_color = RayColor(ray);
       write_color(std::cout, pixel_color);
     }
   }
-  std::clog << "\r Done.                    \n"; // extra white space to overwrite any logs
+  std::clog << "\r Done.                    \n"; // extra white space to
+                                                 // overwrite any logs
 }
 
 // image size in pixels (using c20)

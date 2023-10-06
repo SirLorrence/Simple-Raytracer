@@ -4,9 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-class Vec3 {
-
-public:
+struct Vec3 {
   double axis[3];
 
   // initialtion constructors
@@ -43,9 +41,9 @@ public:
 
   Vec3& operator/=(double value) { return *this *= 1 / value; }
 
-  double length_squared() const {return axis[0]*axis[0] + axis[1] * axis[1] + axis[2] * axis[2];}
+  double LengthSquard() const {return axis[0]*axis[0] + axis[1] * axis[1] + axis[2] * axis[2];}
   
-  double length() const { return std::sqrt(length_sqared()); }
+  double Length() const { return std::sqrt(LengthSquard()); }
   
 };
 
@@ -79,6 +77,6 @@ inline Vec3 cross_product(const Vec3& a, const Vec3& b){
       );
 }
 
-inline Vec3 Normalized(Vec3 v){return v/v.length();}
+inline Vec3 Normalized(Vec3 v){return v/v.Length();}
 
 #endif

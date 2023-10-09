@@ -1,43 +1,19 @@
+#include "../include/global.h"
+
 #include "../include/color.h"
-#include "../include/ray.h"
-#include "../include/vec3.h"
+#include "../include/hittable-list.h"
+#include "../include/object.h"
+#include "../include/sphere.h"
 
 #include <iostream>
 
-// bool HitSphere(const Vec3& center, const Ray& ray, float radius) {
-//   Vec3 origin_center = ray.Origin() - center;
-//   double a = DotProduct(ray.Direction(), ray.Direction());
-//   double b = 2.0 * DotProduct(origin_center, ray.Direction());
-//   double c = DotProduct(origin_center, origin_center) - radius * radius;
-//   float  discriminant = b * b - 4.0f * a * c;
-//   return (discriminant >= 0.0f);
-// }
-
-double HitSphere(const Vec3 &center, const Ray &ray, float radius) {
-  Vec3 origin_center = ray.Origin() - center;
-  double a = DotProduct(ray.Direction(), ray.Direction());
-  double b = 2.0 * DotProduct(origin_center, ray.Direction());
-  double c = DotProduct(origin_center, origin_center) - radius * radius;
-  float discriminant = b * b - 4.0f * a * c;
-
-  if (discriminant < 0) {
-    return -1.0;
+Color RayColor(const Ray &ray, const HittableList &world) {
+  HitRecord hit_record;
+  if (world.Hit(ray, Interval(0, kInfinity), hit_record)) {
+    return 0.5 * (hit_record.normal + Color(1, 1, 1));
   }
-  return (-b - std::sqrt(discriminant) / (2.0f * a));
-}
 
-// TODO: const issue
-Color RayColor(Ray &r) {
-  double t = HitSphere(Vec3(0, 0, -1), r, 0.5f);
-  if (t > 0) {
-    Vec3 sphere_normal = Normalized(r.Scaler(t) - Vec3(0, 0, -1));
-    return 0.5 * Color(sphere_normal.x() + 1, sphere_normal.y() + 1,
-                       sphere_normal.z() + 1);
-  }
-  //  if (HitSphere(Vec3(0, 0, -1), r, 0.5f))
-  //    return Color(1, 0, 0);
-
-  Vec3 unit_direction = Normalized(r.Direction());
+  Vec3 unit_direction = Normalized(ray.Direction());
   double blended_value = 0.5 * (unit_direction.y() + 1.0);
   return (1.0 - blended_value) * Color(1.0, 1.0, 1.0) +
          blended_value * Color(0.5, 0.7, 1.0);
@@ -52,6 +28,11 @@ int main() {
   int img_height = static_cast<int>(img_width / aspect_ratio);
   img_height = (img_height < 1) ? 1 : img_height;
 
+  // World
+  HittableList world;
+  world.Add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.5));
+  world.Add(std::make_shared<Sphere>(Vec3(0, -100.5, -1), 100));
+
   // Camera Setup
   float focal_length = 1.0f;
   float viewpoint_height = 2.0f;
@@ -62,7 +43,7 @@ int main() {
   // calculate the vec across the h and v viewport edge
   Vec3 viewport_x = Vec3(viewpoint_width, 0, 0);
   Vec3 viewport_y =
-      Vec3(0, viewpoint_height, 0); // inverse for right hand coords
+      Vec3(0, -viewpoint_height, 0); // inverse for right hand coords
 
   // calculate the h and v delta vec from pixel to pixel
   Vec3 pixel_delta_x = viewport_x / img_width;
@@ -84,7 +65,7 @@ int main() {
           pixell00_loc + (x * pixel_delta_x) + (y * pixel_delta_y);
       Vec3 ray_direction = pixel_center - cam_center;
       Ray ray(cam_center, ray_direction);
-      Vec3 pixel_color = RayColor(ray);
+      Vec3 pixel_color = RayColor(ray, world);
       write_color(std::cout, pixel_color);
     }
   }

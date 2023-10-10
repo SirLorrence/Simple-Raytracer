@@ -2,6 +2,7 @@
 #define INTERVAL_H
 
 #include "global.h"
+
 struct Interval {
   double min;
   double max;

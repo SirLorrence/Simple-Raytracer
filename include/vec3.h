@@ -46,6 +46,8 @@ struct Vec3 {
     return axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2];
   }
   double Length() const { return std::sqrt(LengthSquared()); }
+
+  static const Vec3 Zero() { return Vec3(0, 0, 0); }
 };
 
 // Vector Utilies

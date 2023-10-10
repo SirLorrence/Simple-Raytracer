@@ -1,9 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "interval.h"
-#include "ray.h"
-#include "vec3.h"
+#include "global.h"
 
 struct HitRecord {
   Vec3 point;

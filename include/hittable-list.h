@@ -3,9 +3,7 @@
 
 #include "interval.h"
 #include "object.h"
-#include "sphere.h"
 
-#include <memory>
 #include <vector>
 
 struct HittableList : public Object {

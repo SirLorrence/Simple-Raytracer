@@ -1,6 +1,11 @@
 [
 {
   "directory": "/home/zro/Documents/repos/Path-Tracer/build",
+  "command": "/usr/bin/c++    -pedantic -std=gnu++20 -o CMakeFiles/Path_Tracer.dir/src/camera.cc.o -c /home/zro/Documents/repos/Path-Tracer/src/camera.cc",
+  "file": "/home/zro/Documents/repos/Path-Tracer/src/camera.cc"
+},
+{
+  "directory": "/home/zro/Documents/repos/Path-Tracer/build",
   "command": "/usr/bin/c++    -pedantic -std=gnu++20 -o CMakeFiles/Path_Tracer.dir/src/main.cc.o -c /home/zro/Documents/repos/Path-Tracer/src/main.cc",
   "file": "/home/zro/Documents/repos/Path-Tracer/src/main.cc"
 },

@@ -3,14 +3,15 @@
 
 #include "color.h"
 #include "global.h"
-#include "object.h"
+#include "render_object.h"
 class Camera {
 public:
-  double aspect_ratio = 1.0; // width/height
-  int img_width = 100;       // width in pixels
+  double aspect_ratio = 1.0;  // width/height
+  int img_width = 100;        // width in pixels
+  int pixel_sample_size = 10; // amount of random sample per pixel
 
-  void Render(const Object &world);
-  Color RayColor(const Ray &ray, const Object &world) const;
+  void Render(const RenderObject &world);
+  Color RayColor(const Ray &ray, const RenderObject &world) const;
 
 private:
   int img_height;
@@ -24,6 +25,8 @@ private:
   Vec3 pixel_delta_y;
 
   void Initialize();
+  Vec3 PixelSampleSquare();
+  Ray GetRay(int coordinate_x, int coordinate_y);
 };
 
 #endif

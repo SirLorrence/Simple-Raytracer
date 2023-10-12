@@ -2,19 +2,19 @@
 #define HITTABLE_LIST_H
 
 #include "interval.h"
-#include "object.h"
+#include "render_object.h"
 
 #include <vector>
 
-struct HittableList : public Object {
-  std::vector<std::shared_ptr<Object>> objects;
+struct HittableList : public RenderObject {
+  std::vector<std::shared_ptr<RenderObject>> render_objects;
 
   HittableList() {}
-  HittableList(std::shared_ptr<Object> object) { Add(object); }
+  HittableList(std::shared_ptr<RenderObject> object) { Add(object); }
 
-  void Clear() { objects.clear(); }
+  void Clear() { render_objects.clear(); }
 
-  void Add(std::shared_ptr<Object> obj) { objects.push_back(obj); }
+  void Add(std::shared_ptr<RenderObject> obj) { render_objects.push_back(obj); }
 
   bool Hit(const Ray &ray, Interval ray_t,
            HitRecord &hit_record) const override {
@@ -23,7 +23,7 @@ struct HittableList : public Object {
     double closest = ray_t.max;
 
     // TODO: make this an Object Type
-    for (const auto &obj : objects) {
+    for (const auto &obj : render_objects) {
       if (obj->Hit(ray, Interval(ray_t.min, closest), temp_record)) {
         hit_anything = true;
         closest = temp_record.scaler;

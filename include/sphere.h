@@ -2,9 +2,9 @@
 #define SPHERE_H
 
 #include "global.h"
-#include "object.h"
+#include "render_object.h"
 
-class Sphere : public Object {
+class Sphere : public RenderObject {
 public:
   Sphere(Vec3 Center, double Raduis) : center(Center), radius(Raduis) {}
 

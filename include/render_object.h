@@ -1,5 +1,5 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef RENDER_OBJECT_H
+#define RENDER_OBJECT_H
 
 #include "global.h"
 
@@ -17,9 +17,9 @@ struct HitRecord {
   }
 };
 
-class Object {
+class RenderObject {
 public:
-  virtual ~Object() = default;
+  virtual ~RenderObject() = default;
   virtual bool Hit(const Ray &r, Interval ray_t, HitRecord &rec) const = 0;
 };
 

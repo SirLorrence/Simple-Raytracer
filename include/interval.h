@@ -13,6 +13,14 @@ struct Interval {
   bool Contains(double value) { return min <= value && max >= value; }
   bool Surrounds(double value) { return min < value && max > value; }
 
+  double Clamp(double value) const {
+    if (value < min)
+      return min;
+    if (value > max)
+      return max;
+    return value;
+  }
+
   static const Interval kEmpty;
   static const Interval kUniverse;
 };

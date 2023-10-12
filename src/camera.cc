@@ -1,6 +1,6 @@
 #include "../include/camera.h"
 
-void Camera::Render(const Object &world) {
+void Camera::Render(const RenderObject &world) {
   Initialize();
 
   // Create PPM image
@@ -11,12 +11,13 @@ void Camera::Render(const Object &world) {
     // logging the  progress
     std::clog << "\r Lines Remaining:" << (img_height - y) << ' ' << std::flush;
     for (int x = 0; x < img_width; ++x) {
-      Vec3 pixel_center =
-          pixel_00_loc + (x * pixel_delta_x) + (y * pixel_delta_y);
-      Vec3 ray_direction = pixel_center - center;
-      Ray ray(center, ray_direction);
-      Vec3 pixel_color = RayColor(ray, world);
-      WriteColor(std::cout, pixel_color);
+      Vec3 pixel_color = Vec3::Zero(); // white
+      // get the aggregated average
+      for (int sample = 0; sample < pixel_sample_size; ++sample) {
+        Ray ray = GetRay(x, y);
+        pixel_color += RayColor(ray, world);
+      }
+      WriteColor(std::cout, pixel_color, pixel_sample_size);
     }
   }
   std::clog << "\r Done.                    \n"; // extra white space to
@@ -42,7 +43,7 @@ void Camera::Initialize() {
   pixel_00_loc = viewport_upper_left + 0.5 * (pixel_delta_x + pixel_delta_y);
 }
 
-Color Camera::RayColor(const Ray &ray, const Object &world) const {
+Color Camera::RayColor(const Ray &ray, const RenderObject &world) const {
   HitRecord hit_record;
   if (world.Hit(ray, Interval(0, kInfinity), hit_record)) {
     return 0.5 * (hit_record.normal + Color(1, 1, 1));
@@ -52,4 +53,22 @@ Color Camera::RayColor(const Ray &ray, const Object &world) const {
   double blended_value = 0.5 * (unit_direction.y() + 1.0);
   return (1.0 - blended_value) * Color(1.0, 1.0, 1.0) +
          blended_value * Color(0.5, 0.7, 1.0);
+}
+
+Ray Camera::GetRay(int coordinate_x, int coordinate_y) {
+  Vec3 pixel_center = pixel_00_loc + (coordinate_x * pixel_delta_x) +
+                      (coordinate_y * pixel_delta_y);
+  Vec3 pixel_sample = pixel_center + PixelSampleSquare();
+  // writtin for clarity
+  Vec3 origin = center;
+  Vec3 direction = pixel_sample - origin;
+
+  return Ray(origin, direction);
+}
+
+// Return an random point in the surrounding square of the pixel origin.
+Vec3 Camera::PixelSampleSquare() {
+  double random_point_x = -0.5 + RandomDouble01();
+  double random_point_y = -0.5 + RandomDouble01();
+  return (random_point_x * pixel_delta_x) + (random_point_y * pixel_delta_y);
 }

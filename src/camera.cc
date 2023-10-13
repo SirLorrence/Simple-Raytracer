@@ -15,7 +15,7 @@ void Camera::Render(const RenderObject &world) {
       // get the aggregated average
       for (int sample = 0; sample < pixel_sample_size; ++sample) {
         Ray ray = GetRay(x, y);
-        pixel_color += RayColor(ray, world);
+        pixel_color += RayColor(ray, max_depth, world);
       }
       WriteColor(std::cout, pixel_color, pixel_sample_size);
     }
@@ -43,10 +43,20 @@ void Camera::Initialize() {
   pixel_00_loc = viewport_upper_left + 0.5 * (pixel_delta_x + pixel_delta_y);
 }
 
-Color Camera::RayColor(const Ray &ray, const RenderObject &world) const {
+Color Camera::RayColor(const Ray &ray, int depth,
+                       const RenderObject &world) const {
   HitRecord hit_record;
-  if (world.Hit(ray, Interval(0, kInfinity), hit_record)) {
-    return 0.5 * (hit_record.normal + Color(1, 1, 1));
+
+  // no more light is gathered.
+  if (depth <= 0)
+    return Color(0, 0, 0);
+
+  if (world.Hit(ray, Interval(0.001, kInfinity), hit_record)) {
+    // Diffused
+    //    Vec3 direction = RandomOnHemisphere(hit_record.normal);
+    // Limbertian
+    Vec3 direction = hit_record.normal + RandomNormalizedVec3();
+    return 0.5 * RayColor(Ray(hit_record.point, direction), depth - 1, world);
   }
 
   Vec3 unit_direction = Normalized(ray.Direction());

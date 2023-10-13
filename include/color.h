@@ -6,7 +6,9 @@
 #include <iostream>
 
 using Color = Vec3;
-
+inline double LinearToGamma(double linear_component) {
+  return std::sqrt(linear_component);
+}
 inline void WriteColor(std::ostream &out, Color pixel_color,
                        int pixel_sample_size) {
   double r = pixel_color.x();
@@ -18,6 +20,11 @@ inline void WriteColor(std::ostream &out, Color pixel_color,
   r *= scale;
   b *= scale;
   g *= scale;
+
+  // Apply the linear to gamma transform
+  r = LinearToGamma(r);
+  g = LinearToGamma(g);
+  b = LinearToGamma(b);
 
   static const Interval color_intensity(0.000, 0.999);
 

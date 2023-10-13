@@ -1,7 +1,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 
-#include <cmath>
+#include "global.h"
 #include <iostream>
 
 struct Vec3 {
@@ -48,6 +48,14 @@ struct Vec3 {
   double Length() const { return std::sqrt(LengthSquared()); }
 
   static const Vec3 Zero() { return Vec3(0, 0, 0); }
+
+  static Vec3 Random() {
+    return Vec3(RandomDouble01(), RandomDouble01(), RandomDouble01());
+  }
+  static Vec3 Random(double min, double max) {
+    return Vec3(RandomDouble(min, max), RandomDouble(min, max),
+                RandomDouble(min, max));
+  }
 };
 
 // Vector Utilies
@@ -88,5 +96,22 @@ inline Vec3 CrossProduct(const Vec3 &a, const Vec3 &b) {
 
 // unit vector
 inline Vec3 Normalized(Vec3 v) { return v / v.Length(); }
+
+inline Vec3 RandomVec3InSphere() {
+  while (true) {
+    Vec3 point = Vec3::Random(-1, 1);
+    if (point.LengthSquared() < 1)
+      return point;
+  }
+}
+
+inline Vec3 RandomNormalizedVec3() { return Normalized(RandomVec3InSphere()); }
+
+inline Vec3 RandomOnHemisphere(const Vec3 &normal) {
+  Vec3 unit_sphere_hit = RandomNormalizedVec3();
+  if (DotProduct(unit_sphere_hit, normal) > 0.0)
+    return unit_sphere_hit;
+  return -unit_sphere_hit;
+}
 
 #endif

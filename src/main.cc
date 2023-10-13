@@ -11,7 +11,9 @@ int main() {
 
   Camera main_camera;
   main_camera.aspect_ratio = 16.0 / 9.0;
-  main_camera.img_width = 400;
+  main_camera.img_width = 640;
+  main_camera.pixel_sample_size = 100;
+  main_camera.max_depth = 50;
 
   main_camera.Render(world);
 }

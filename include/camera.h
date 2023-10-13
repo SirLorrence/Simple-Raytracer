@@ -9,9 +9,10 @@ public:
   double aspect_ratio = 1.0;  // width/height
   int img_width = 100;        // width in pixels
   int pixel_sample_size = 10; // amount of random sample per pixel
+  int max_depth = 10;         // recursion depth of ray bounces
 
   void Render(const RenderObject &world);
-  Color RayColor(const Ray &ray, const RenderObject &world) const;
+  Color RayColor(const Ray &ray, int depth, const RenderObject &world) const;
 
 private:
   int img_height;

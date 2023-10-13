@@ -3,9 +3,12 @@
 
 #include "global.h"
 
+class Material;
+
 struct HitRecord {
   Vec3 point;
   Vec3 normal;
+  std::shared_ptr<Material> material;
   double scaler; // distance or scaler
   bool front_face;
 

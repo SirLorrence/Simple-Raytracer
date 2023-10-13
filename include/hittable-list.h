@@ -2,8 +2,10 @@
 #define HITTABLE_LIST_H
 
 #include "interval.h"
+
 #include "render_object.h"
 
+#include <memory>
 #include <vector>
 
 struct HittableList : public RenderObject {

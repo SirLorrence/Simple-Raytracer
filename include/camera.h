@@ -1,9 +1,14 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "color.h"
 #include "global.h"
+
+#include "color.h"
 #include "render_object.h"
+#include "material.h"
+
+#include <iostream>
+
 class Camera {
 public:
   double aspect_ratio = 1.0;  // width/height

@@ -26,6 +26,7 @@ bool Sphere::Hit(const Ray &ray, Interval ray_t, HitRecord &hit_record) const {
   hit_record.point = ray.Scaler(hit_record.scaler);
   Vec3 outward_normal = (hit_record.point - center) / radius;
   hit_record.SetFaceNormal(ray, outward_normal);
+  hit_record.material = mat;
 
   return true;
 }

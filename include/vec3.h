@@ -56,6 +56,11 @@ struct Vec3 {
     return Vec3(RandomDouble(min, max), RandomDouble(min, max),
                 RandomDouble(min, max));
   }
+
+  bool NearZero() const {
+    double sample = 1e-8;
+    return (std::fabs(axis[0]) < sample && std::fabs(axis[1]) < sample && std::fabs(axis[2]) < sample);
+  }
 };
 
 // Vector Utilies
@@ -114,4 +119,7 @@ inline Vec3 RandomOnHemisphere(const Vec3 &normal) {
   return -unit_sphere_hit;
 }
 
+inline Vec3 Reflect(const Vec3 &v, const Vec3 &n){
+  return v - 2 * DotProduct(v,n) *n;
+}
 #endif

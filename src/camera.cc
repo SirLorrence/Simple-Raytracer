@@ -52,11 +52,17 @@ Color Camera::RayColor(const Ray &ray, int depth,
     return Color(0, 0, 0);
 
   if (world.Hit(ray, Interval(0.001, kInfinity), hit_record)) {
+    Ray scatted_ray;
+    Color attenuation;
+    if(hit_record.material->Scatter(ray,hit_record,attenuation,scatted_ray))
+      return attenuation * RayColor(scatted_ray, depth -1 , world);
+    return Color(0,0,0);
+
     // Diffused
     //    Vec3 direction = RandomOnHemisphere(hit_record.normal);
     // Limbertian
-    Vec3 direction = hit_record.normal + RandomNormalizedVec3();
-    return 0.5 * RayColor(Ray(hit_record.point, direction), depth - 1, world);
+  //  Vec3 direction = hit_record.normal + RandomNormalizedVec3();s
+//    return 0.5 * RayColor(Ray(hit_record.point, direction), depth - 1, world);
   }
 
   Vec3 unit_direction = Normalized(ray.Direction());

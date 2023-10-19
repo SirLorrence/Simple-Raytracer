@@ -51,4 +51,40 @@ class Metal : public Material {
   double fuzz;
 };
 
+
+class Dielectric : public Material{
+  public: 
+  Dielectric(double IndexOfRefraction ) : index_of_refraction(IndexOfRefraction) {}
+   bool Scatter(const Ray &input_ray, const HitRecord &hit_rec, Color &attenuation, Ray &scattered_ray) const override{
+    attenuation =  Color(1.0,1.0,1.0);
+    double refraction_ratio = hit_rec.front_face ? (1.0/index_of_refraction) : index_of_refraction;
+
+    Vec3 unit_direction = Normalized(input_ray.Direction());
+    double cos_theta = std::fmin(DotProduct(-unit_direction, hit_rec.normal), 1.0);
+    double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
+    
+    bool cannot_refract = refraction_ratio * sin_theta > 1.0; 
+    Vec3 dir;
+
+    if(cannot_refract || Reflectance(cos_theta, refraction_ratio) > RandomDouble01())
+      dir = Reflect(unit_direction,hit_rec.normal);
+    else 
+      dir = Refract(unit_direction,hit_rec.normal, refraction_ratio);
+
+
+    scattered_ray = Ray(hit_rec.point, dir);
+    return true;
+   }
+  
+  private:
+  double index_of_refraction;
+
+  //Schlick's approximation 
+  static double Reflectance (double cosine, double ref_index){
+    double r0 = (1-ref_index) / (1+ref_index);
+    r0 = r0*r0;
+    return r0 + (1-r0)* std::pow((1-cosine),5);
+  }
+};
+
 #endif

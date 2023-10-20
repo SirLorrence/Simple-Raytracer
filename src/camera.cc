@@ -31,10 +31,10 @@ void Camera::Initialize() {
   center = look_from;
 
   // viewport dimensions
-  double focal_length = (look_from - look_at).Length();
+  // double focal_length = (look_from - look_at).Length();
   double theta = DegreesToRadians(v_fov);
   double h = std::tan(theta/2);
-  double viewpoint_height = 2 * h * focal_length;
+  double viewpoint_height = 2 * h * focus_distance;
   double viewpoint_width =
       viewpoint_height * (static_cast<double>(img_width) / img_height);
 
@@ -51,8 +51,13 @@ void Camera::Initialize() {
   pixel_delta_y = viewport_y / img_height;
 
   Vec3 viewport_upper_left =
-      center - (focal_length * w)- viewport_x / 2 - viewport_y / 2;
+      center - (focus_distance * w)- viewport_x / 2 - viewport_y / 2;
   pixel_00_loc = viewport_upper_left + 0.5 * (pixel_delta_x + pixel_delta_y);
+
+  // defocus disk
+  double defocus_radius = focus_distance * std::tan(DegreesToRadians(defocus_angle/2));
+  defocus_disk_x = u * defocus_radius;
+  defocus_disk_y = v * defocus_radius;
 }
 
 Color Camera::RayColor(const Ray &ray, int depth,
@@ -88,10 +93,17 @@ Ray Camera::GetRay(int coordinate_x, int coordinate_y) {
                       (coordinate_y * pixel_delta_y);
   Vec3 pixel_sample = pixel_center + PixelSampleSquare();
   
-  Vec3 origin = center;
+
+  Vec3 origin = (defocus_angle <= 0)? center : DefocusDiskSample();
   Vec3 direction = pixel_sample - origin;
   return Ray(origin, direction);
 }
+
+Vec3 Camera::DefocusDiskSample() const {
+  Vec3 v = RandomInDisk();
+  return center + (v[0] * defocus_disk_x) + (v[1] * defocus_disk_y);
+}
+
 
 // Return an random point in the surrounding square of the pixel origin.
 Vec3 Camera::PixelSampleSquare() {

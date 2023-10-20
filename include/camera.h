@@ -21,6 +21,9 @@ public:
   Vec3 look_at = Vec3(0,0,-1);
   Vec3 view_up = Vec3(0,1,0);
 
+  double defocus_angle = 0; // variation angle of rays through each pixel
+  double focus_distance = 10;
+
   void Render(const RenderObject &world);
   Color RayColor(const Ray &ray, int depth, const RenderObject &world) const;
 
@@ -37,10 +40,15 @@ private:
   Vec3 u;
   Vec3 v;
   Vec3 w;
+  
+  // focus radius
+  Vec3 defocus_disk_x;
+  Vec3 defocus_disk_y;
 
   void Initialize();
-  Vec3 PixelSampleSquare();
   Ray GetRay(int coordinate_x, int coordinate_y);
+  Vec3 DefocusDiskSample() const;
+  Vec3 PixelSampleSquare();
 };
 
 #endif

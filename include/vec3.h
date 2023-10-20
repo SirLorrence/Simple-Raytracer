@@ -112,6 +112,13 @@ inline Vec3 RandomVec3InSphere() {
 
 inline Vec3 RandomNormalizedVec3() { return Normalized(RandomVec3InSphere()); }
 
+inline Vec3 RandomInDisk(){
+  while (true){
+    Vec3 point = Vec3(RandomDouble(-1,1),RandomDouble(-1,1),0);
+    if(point.LengthSquared() < 1) return point;
+  }
+}
+
 inline Vec3 RandomOnHemisphere(const Vec3 &normal) {
   Vec3 unit_sphere_hit = RandomNormalizedVec3();
   if (DotProduct(unit_sphere_hit, normal) > 0.0)

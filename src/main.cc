@@ -28,7 +28,9 @@ int main() {
 
   main_camera.v_fov = 20;
   main_camera.look_from = Vec3(-2,2,1);
-
+  
+  main_camera.defocus_angle = 10.0;
+  main_camera.focus_distance = 3.4;
 
   main_camera.Render(world);
 }

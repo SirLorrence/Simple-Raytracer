@@ -1,2 +1,4 @@
-# Path-Tracer
- Path Tracer done in C++. Project to learning about how Raytracing works
+# Simple RayTracer
+A simple Ray Tracer done in C++ that renders a ppm image. Project to learning about how Raytracing works. 
+
+## Description in progress... 

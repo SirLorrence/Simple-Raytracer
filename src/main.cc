@@ -17,13 +17,18 @@ int main() {
   world.Add(std::make_shared<Sphere> (Vec3(0, -100.5, -1), 100.0, material_ground));
   world.Add(std::make_shared<Sphere> (Vec3(0, 0, -1), 0.5, material_center));
   world.Add(std::make_shared<Sphere> (Vec3(-1.0, 0, -1), 0.5, material_left));
+  world.Add(std::make_shared<Sphere> (Vec3(-1.0, 0, -1), -0.4, material_left));
   world.Add(std::make_shared<Sphere> (Vec3(1.0,0, -1), 0.5, material_right));
 
   Camera main_camera;
   main_camera.aspect_ratio = 16.0 / 9.0;
-  main_camera.img_width = 640; 
+  main_camera.img_width = 640;
   main_camera.pixel_sample_size = 100;
   main_camera.max_depth = 50;
+
+  main_camera.v_fov = 20;
+  main_camera.look_from = Vec3(-2,2,1);
+
 
   main_camera.Render(world);
 }

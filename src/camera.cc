@@ -27,19 +27,31 @@ void Camera::Render(const RenderObject &world) {
 void Camera::Initialize() {
   img_height = static_cast<int>(img_width / aspect_ratio);
   img_height = (img_height < 1) ? 1 : img_height;
+  
+  center = look_from;
 
-  viewpoint_width =
+  // viewport dimensions
+  double focal_length = (look_from - look_at).Length();
+  double theta = DegreesToRadians(v_fov);
+  double h = std::tan(theta/2);
+  double viewpoint_height = 2 * h * focal_length;
+  double viewpoint_width =
       viewpoint_height * (static_cast<double>(img_width) / img_height);
-  center = Vec3::Zero();
 
-  Vec3 viewport_x = Vec3(viewpoint_width, 0, 0);
-  Vec3 viewport_y = Vec3(0, -viewpoint_height, 0);
+  // calculate basis vectors for camera frame
+  w = Normalized(look_from - look_at);
+  u = Normalized(CrossProduct(view_up,w));
+  v = CrossProduct(w,u);
+
+
+  Vec3 viewport_x = viewpoint_width * u;
+  Vec3 viewport_y = viewpoint_height * -v;
 
   pixel_delta_x = viewport_x / img_width;
   pixel_delta_y = viewport_y / img_height;
 
   Vec3 viewport_upper_left =
-      center - Vec3(0, 0, focal_length) - viewport_x / 2 - viewport_y / 2;
+      center - (focal_length * w)- viewport_x / 2 - viewport_y / 2;
   pixel_00_loc = viewport_upper_left + 0.5 * (pixel_delta_x + pixel_delta_y);
 }
 
@@ -75,10 +87,9 @@ Ray Camera::GetRay(int coordinate_x, int coordinate_y) {
   Vec3 pixel_center = pixel_00_loc + (coordinate_x * pixel_delta_x) +
                       (coordinate_y * pixel_delta_y);
   Vec3 pixel_sample = pixel_center + PixelSampleSquare();
-  // writtin for clarity
+  
   Vec3 origin = center;
   Vec3 direction = pixel_sample - origin;
-
   return Ray(origin, direction);
 }
 

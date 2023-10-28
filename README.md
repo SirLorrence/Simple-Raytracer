@@ -1,14 +1,8 @@
 # Simple RayTracer
 A simple Ray Tracer done in C++ that renders a ppm image. Project to learning about how Raytracing works. 
 
-## Description in progress... 
-
-
-## Whats next?
-- Project Refactoring
-- CPU/GPU multi-threading to speed up rending
-- SDL Project conversion
-- Runtime Rendering (being able to move the camera in a graphics window)
+### [Project Continuation](https://gitlab.com/SirLorrence/raytracer)
+### [Associated Website Page](https://www.laurencesadler.com/ray-tracer-part-1)
 
 ## References
 - [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
